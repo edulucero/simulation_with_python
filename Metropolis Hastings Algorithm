@@ -1,0 +1,106 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def binomial_dist(n, p, k):
+
+    def fact(x):
+        return np.math.factorial(x)
+
+    return ( fact(n) / ( fact(n-k)*fact(k) ) ) * p**k * ((1-p)**(n-k))
+
+def q1_i():
+		  state = 0
+		  states = []
+		  for i in range(10000):
+
+		      proposed_move = np.random.choice(np.arange(0, 15))
+		      u = np.random.rand()
+
+		      if proposed_move > 10:
+		          states.append(state)
+
+		      elif u < (binomial_dist(10, 0.35, proposed_move)/binomial_dist(10, 0.35, state)):
+		          state = proposed_move
+		          states.append(state)
+		      else:
+		          states.append(state)
+
+		  a = states[2000:]
+		  b = np.asarray(a)
+		  c = sum(b)/8000
+		  print(f"Estimate: {c}")
+
+q1_i()
+
+def q1_ii():
+    state = 0
+    states = []
+    for i in range(10000):
+
+        proposed_move = np.random.choice(np.arange(0, 15))
+        u = np.random.rand()
+
+        if proposed_move > 10:
+            states.append(0)
+
+        elif u < (binomial_dist(10, 0.35, proposed_move)/binomial_dist(10, 0.35, state)):
+            states.append(1)
+        else:
+            states.append(0)
+
+    a = states[2000:]
+    b = pd.Series(a)
+    c = pd.Series(b)
+    d = c.value_counts()[1]
+    e = d/8000 # ACCEPTANCE RATE
+    print(f"Acceptance Rate: {e}")
+
+q1_ii()
+
+# 1.iii All accepted transitions can be regarded as independent draws from the distribution from x because they do not depend on the proposal distribution since it is symmetric.
+
+def q_2():
+    state = 0
+    states = []
+    for i in range(10000):
+
+        proposed_move = np.random.normal(scale =  1.1)
+        u = np.random.rand()
+
+        if u < (np.exp(-proposed_move**2)*(3+np.sin(5*proposed_move))+(np.sin(2*proposed_move))+(np.sin(7*proposed_move)))/(np.exp(-state**2)*(3+np.sin(5*state))+(np.sin(2*state))+(np.sin(7*state))):
+            state = proposed_move
+            states.append(state)
+        else:
+            states.append(state)
+
+    a = states[2000:]
+    plt.hist(a, bins = 1000, normed = 1)
+    plt.show()
+
+q_2()
+
+def q3():
+    def fact(x):
+        return np.math.factorial(x)
+    state = 0
+    states = []
+    for i in range(10000):
+        proposed_move = np.ceil((np.log(np.random.rand()))/(np.log(1-0.4)))
+        u = np.random.rand()
+
+        if u < ((4**proposed_move/fact(proposed_move)))/((4**state/fact(state))):
+            state = proposed_move
+            states.append(state)
+        else:
+            states.append(state)
+
+    a = states[2000:]
+    b = pd.Series(a)
+    c = sum(b)
+    d = c/8000 # ACCEPTANCE RATE
+
+    print(f"Estimate: {d}")
+    print(f"Variance: {b.var()}")
+
+	q3()
