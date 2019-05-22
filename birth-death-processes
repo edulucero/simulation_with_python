@@ -1,0 +1,105 @@
+import numpy as np
+import pandas as pd
+
+def q1():
+    A = pd.DataFrame()
+    for i in range(50):
+        h = 0.0
+        t = 1
+        state = 0
+        states = []
+        lamb = 10
+
+        while h <= t:
+            rand = np.random.rand()
+            if state == 0:
+                if rand < h*lamb:
+                    state += 1
+                    states.append(state)
+                    h += 0.01
+                else:
+                    states.append(state)
+                    h += 0.01
+            if state == 1:
+                if rand < h*1:
+                    state -= 1
+                    states.append(state)
+                    h += 0.01
+                elif rand < h*lamb:
+                    state += 1
+                    states.append(state)
+                    h += 0.01
+                else:
+                    states.append(state)
+                    h += 0.01
+            if state == 2:
+                if rand < h*3:
+                    state -= 1
+                    states.append(state)
+                    h += 0.01
+                elif rand < h*lamb:
+                    state += 1
+                    h += 0.01
+                    states.append(state)
+                else:
+                    states.append(state)
+                    h += 0.01
+            if state == 3:
+                if rand < h*2:
+                    state -= 1
+                    h += 0.01
+                    states.append(state)
+                elif rand < h*lamb:
+                    state -= 1
+                    h += 0.01
+                    states.append(state)
+                else:
+                    states.append(state)
+                    h += 0.01
+            if state == 4:
+                if rand < h*1:
+                    state -= 1
+                    h += 0.01
+                    states.append(state)
+                else:
+                    states.append(state)
+                    h += 0.01
+        A[f'{i}'] = pd.Series(states)
+
+    A['mean'] = A.mean(axis=1)
+    display(A)
+q1()
+
+def q2():
+    L = pd.DataFrame()
+
+    for i in range(10):
+        lamb = 0.1 #per week
+        mu = (1/104) #per week conversion
+        runs = []
+        h = 0.2
+        rodents = 0
+        while h < 5200:
+            rand = np.random.rand()
+            if rand < mu*h:
+                rodents = 0
+                h += 0.2
+                runs.append(rodents)
+            elif rand < lamb*h:
+                rodents += 1
+                h += 0.2
+                runs.append(rodents)
+            else:
+                h += 0.2
+                runs.append(rodents)
+        L[f'{i}'] = pd.Series(runs)
+
+    L['mean'] = L.mean(axis = 1)
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(16, 10))
+    ax.plot(L['mean'][:500])
+    ax.grid()
+    ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5));
+    plt.show()
+
+q2()
